@@ -43,7 +43,8 @@ ui <- navbarPage("HELOC vs. Mortgage Calculator",
                             mainPanel(h3("Pay-off Schedule"),
                                       tabsetPanel(
                                         tabPanel("Table View", 
-                                                 DT::dataTableOutput("mortgage_table")
+                                                 DT::dataTableOutput("mortgage_table"),
+                                                 DT::dataTableOutput("HELOC_table")
                                                  ),
                                         tabPanel("Graph View"))
                                       
@@ -53,10 +54,21 @@ ui <- navbarPage("HELOC vs. Mortgage Calculator",
                  tabPanel("Contact")
 )
 
-# Server
 server <- function(input, output) {
-  # output$mortgage_table <- renderTable({paste("Loan Balance: ", input$loan_balance)})
-  output$mortgage_table <- DT::renderDataTable({mortgage(loan_amount = input$loan_balance, APR = input$interest_rate)})
+  
+  options(DT.options = list(
+    lengthMenu = list(c(-1, 5, 10, 15, 30), c('All', '5', '10', '15', '30')),
+    pageLength = -1))
+  
+  output$mortgage_table <- DT::renderDataTable({
+    mortgage(loan_amount = input$loan_balance, rate = input$interest_rate, start_date = input$start_date) %>%
+      datatable() %>% 
+      formatCurrency(columns = 2:5)})
+  
+  output$HELOC_table <- DT::renderDataTable({
+    HELOC(loan_amount = input$loan_balance, rate = input$interest_rate, start_date = input$start_date, income = input$income, expenses = input$expenses) %>%
+      datatable() %>%
+      formatCurrency(columns = 2:5)})
 }
 
 # Run app
@@ -65,4 +77,6 @@ shinyApp(ui = ui, server = server)
 
 
 # TODO
-
+# Change date format to mm/dd/yyyy
+# Refactor HELOC Calc
+# - add exit statement if it takes too long, with an error message to the client. 

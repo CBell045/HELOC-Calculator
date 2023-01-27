@@ -6,16 +6,15 @@
 # Import Libraries
 library(tidyverse)
 library(lubridate)
-library(DT)
 
 #---------- Mortgage Calculator ----------
-mortgage = function(loan_amount = 100000, principal = 0, APR = .05, years = 30) {
+mortgage = function(loan_amount = 100000, principal = 0, rate = .05, years = 30, start_date = today()) {
   # Total Number of Payments
   payments = years * 12
   # Outstanding principal of loan 
   outstanding_principal = loan_amount - principal
-  # Monthly rate (convert APR to percentage and divide by 12)
-  monthly_rate = APR / 12
+  # Monthly rate (convert rate to percentage and divide by 12)
+  monthly_rate = rate / 12
   # Present Value of an annuity formulas (https://www.investopedia.com/retirement/calculating-present-and-future-value-of-annuities/)
   r = (1 + monthly_rate) ^ (payments) - 1
   # Monthly payment
@@ -33,15 +32,13 @@ mortgage = function(loan_amount = 100000, principal = 0, APR = .05, years = 30) 
     principal = payment - interest
     outstanding_principal = outstanding_principal - principal
     # Add one month to the date
-    pay_date = today() %m+% months(i - 1, abbreviate = FALSE)
+    pay_date = start_date %m+% months(i - 1, abbreviate = FALSE)
     # Add row to the amortization table
     amort_table[i,] <- c(pay_date, payment, principal, interest, outstanding_principal)
   }
   # Format date column correctly
   class(amort_table$Date) <- "Date"
-  dt_amort_table <- datatable(amort_table) %>% formatCurrency(columns = 2:5)
-  
-  return(dt_amort_table)
+  return(amort_table)
 }
 
 #---------- End of Mortgage Calculator ----------
@@ -50,11 +47,11 @@ mortgage = function(loan_amount = 100000, principal = 0, APR = .05, years = 30) 
 
 
 #---------- HELOC Calculator ----------
-HELOC = function(loan_amount = 100000, principal = 0, rate = 5, income = 1000, expenses = 500, start_date = Sys.Date(), interest_pay_day = 1, income_pay_day = 1, expenses_pay_day = 1) {
+HELOC = function(loan_amount = 100000, principal = 0, rate = .05, income = 1000, expenses = 500, start_date = today(), interest_pay_day = 1, income_pay_day = 1, expenses_pay_day = 1) {
   # Outstanding principal of loan 
   outstanding_principal = loan_amount - principal
   # Monthly rate (convert rate to percentage and divide by 12)
-  daily_rate = rate / 100 / 365.25
+  daily_rate = rate / 365.25
 
   # Create a data frame for the HELOC schedule
   HELOC_table <- data.frame("date" = 0,
@@ -96,14 +93,14 @@ HELOC = function(loan_amount = 100000, principal = 0, rate = 5, income = 1000, e
   class(HELOC_table$date) <- "Date"
   
   # View tables
-  View(HELOC_table)
-  View(filter(HELOC_table, day(HELOC_table$date) == 1))
+  # View(HELOC_table)
+  return(filter(HELOC_table, day(HELOC_table$date) == 1))
 }
 
 # Test values
-# mortgage(loan_amount = 200000, APR = 4.5, years = 10)
+# mortgage(loan_amount = 200000, rate = 4.5, years = 10)
 
-# HELOC(loan_amount = 200000, principal = 0, rate = 4.5, income = 5000, expenses = 3000)
+# HELOC(loan_amount = 350000, principal = 0, rate = .06, income = 50000)
 
 
 # print("Using a HELOC to replace your traditional mortgage could save you thousands of dollars in interest and pay off your home in 7-10 years.")
