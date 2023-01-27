@@ -7,7 +7,7 @@ source("./HELOC.R")
 ui <- navbarPage("HELOC vs. Mortgage Calculator",
                  tabPanel("Calculator",
                           sidebarLayout(
-                            sidebarPanel(
+                            sidebarPanel(width = 2, 
                               h3("Loan Details"),
                               # Loan Balance Input
                               currencyInput("loan_balance", 
@@ -43,8 +43,11 @@ ui <- navbarPage("HELOC vs. Mortgage Calculator",
                             mainPanel(h3("Pay-off Schedule"),
                                       tabsetPanel(
                                         tabPanel("Table View", 
-                                                 DT::dataTableOutput("mortgage_table"),
-                                                 DT::dataTableOutput("HELOC_table")
+                                                 fluidRow(
+                                                   column(width = 6, DT::dataTableOutput("mortgage_table")),
+                                                   column(width = 6, DT::dataTableOutput("HELOC_table"))
+                                                 )
+                                              
                                                  ),
                                         tabPanel("Graph View"))
                                       
