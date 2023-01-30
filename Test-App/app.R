@@ -53,7 +53,16 @@ ui <- navbarPage("HELOC vs. Mortgage Calculator",
                                       
                           )
                  )),
-                 tabPanel("About"),
+                 tabPanel("About",
+                          sidebarLayout(
+                            sidebarPanel(width = 3, 
+                                         h3("Overview")
+                                         ),
+
+                            mainPanel(h3("What is a HELOC?"),
+                                      p("A HELOC (or Home Equity Line of Credit)")
+                            )
+                          )),
                  tabPanel("Contact")
 )
 
@@ -71,7 +80,7 @@ server <- function(input, output) {
   output$HELOC_table <- DT::renderDataTable({
     HELOC(loan_amount = input$loan_balance, rate = input$interest_rate, start_date = input$start_date, income = input$income, expenses = input$expenses) %>%
       datatable() %>%
-      formatCurrency(columns = 2:5)})
+      formatCurrency(columns = 2:6)})
 }
 
 # Run app
@@ -81,5 +90,7 @@ shinyApp(ui = ui, server = server)
 
 # TODO
 # Change date format to mm/dd/yyyy
+# Add accumulated interest and principal columns
 # Refactor HELOC Calc
-# - add exit statement if it takes too long, with an error message to the client. 
+# - add exit statement if it is over 40 years, with an error message to the client. 
+# - create a monthly display table that sums the monthly amounts
