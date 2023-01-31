@@ -54,16 +54,29 @@ ui <- navbarPage("HELOC vs. Mortgage Calculator",
                           )
                  )),
                  tabPanel("About",
-                          sidebarLayout(
-                            sidebarPanel(width = 3, 
-                                         h3("Overview")
-                                         ),
-
-                            mainPanel(h3("What is a HELOC?"),
-                                      p("A HELOC (or Home Equity Line of Credit)")
+                            mainPanel(img(src = "HELOC-vs-mortgage.png", style = "width: 100%"),
+                                      h3("What is a HELOC?"),
+                                      p("A Heloc is simply a lending product with typically a variable interest rate and a mid-length term (approx. 10 yrs), secured by the equity in a home.
+Traditionally, Helocs are employed in the second lien position, for purposes of accessing additional equity in a home, above and beyond what is borrowed for a mortgage.", style = "font-size:20px;"),
+                                      h3("HELOC vs. Mortgage"),
+                                      p("For our purposes, we teach a strategy using a HELOC in the first lien position, and essentially replace a traditional mortgage. By implementing the strategy and utilizing a very specific HELOC product, we help people payoff a residential loan in 5-7 years, without changing their budget at all!", style = "font-size:20px;"),
+                                      h3("What is Prevail? "),
+                                      p("Prevail LLC. helps to educate clients about the potential benefits of HELOC's and their place in a successful financial plan. Contact to see how you can break the mold of traditional financial planning and Prevail!", style = "font-size:20px;"),
+                                      a("Schedule an appointment!", href = "https://calendly.com/tsbell004", style = "font-size:18px;")
+                                      
                             )
-                          )),
-                 tabPanel("Contact")
+                          ),
+                 tabPanel("Prevail",
+                            mainPanel(
+                              img(src = "Prevail-Logo-White.png", style = "width: 100%"),
+                              h3("The traditional method of preparing for retirement is broken. "),
+                              p("Putting away a little money into a volitile stock market or 401k just isn't going to cut it. You need a reliable way to both save for retirement and enjoy the present. You need to Prevail.", style = "font-size:18px;"),
+                              h3("We're not in the sales business; we're in the solutions business. "),
+                              p("Prevail helps clients to realize the potential of their funds and use out-of-the-box thinking to get their money working for them. Contact us today to see how you can break the mold of traditional financial planning and Prevail!", style = "font-size:18px;"),
+                              h3("Interested in Learning More?"),
+                              p("Schedule your free financial consultation today. Learn about HELOC's and how you can leverage the equity in your home. ", style = "font-size:18px;"),
+                              a("Schedule an appointment!", href = "https://calendly.com/tsbell004", style = "font-size:18px;"))
+                          )
 )
 
 server <- function(input, output) {
