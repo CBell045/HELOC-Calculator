@@ -10,7 +10,7 @@ output:
     fig_width: 12
     fig_align: 'center'
 author: "Chad Bell"
-date: "`r Sys.Date()`"
+date: "2023-02-02"
 ---
 
 # Overview
