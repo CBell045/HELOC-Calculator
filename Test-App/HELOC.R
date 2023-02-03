@@ -9,45 +9,46 @@ library(lubridate)
 
 #---------- Mortgage Calculator ----------
 mortgage = function(loan_amount = 100000, principal = 0, rate = .05, years = 30, start_date = today()) {
-  # Total Number of Payments
+  # Total Number of payments
   payments = years * 12
-  # Outstanding principal of loan 
+  # Outstanding principal of loan
   outstanding_principal = loan_amount - principal
   # Monthly rate (convert rate to percentage and divide by 12)
   monthly_rate = rate / 12
-  # Present Value of an annuity formulas (https://www.investopedia.com/retirement/calculating-present-and-future-value-of-annuities/)
-  r = (1 + monthly_rate) ^ (payments) - 1
   # Monthly payment
-  payment = outstanding_principal * monthly_rate * (r + 1) / r
-  # Create a data frame for the amortization schedule
-  amort_table <- data.frame("Date" = 0,
-                            "Payment" = 0,
-                            "Principal" = 0,
-                            "Interest" = 0,
-                            "Balance" = 0)
-  # Loop through payments
+  payment = (loan_amount * monthly_rate) /
+    (1 - (1 + monthly_rate) ^ (-payments))
+  # Create a vector of payment numbers
+  payment_numbers = 1:payments
+  # Pre-allocate the amortization schedule matrix
+  amort_table = matrix(nrow = payments, ncol = 7)
+  colnames(amort_table) <- c("Date", "Payment", "Principal", "Interest", "Balance", "Total Interest", "Total Cost")
+  # Calculate the date for each payment using vectorized operations
+  dates = start_date + months(payment_numbers - 1, abbreviate = FALSE)
+  total_paid = payment * payment_numbers
+  # Fill in the amortization table
+  amort_table[, 1] <- dates
+  amort_table[, 2] <- payment
+  amort_table[, 7] <- total_paid
   for (i in 1:payments) {
-    # Recalculate values for each loop
-    interest = outstanding_principal * monthly_rate
-    principal = payment - interest
-    outstanding_principal = outstanding_principal - principal
-    # Add one month to the date
-    pay_date = start_date %m+% months(i - 1, abbreviate = FALSE)
-    # Add row to the amortization table
-    amort_table[i,] <- c(pay_date, payment, principal, interest, outstanding_principal)
+    amort_table[i, 4] <- outstanding_principal * monthly_rate
+    amort_table[i, 3] <- payment - amort_table[i, 4]
+    outstanding_principal <- outstanding_principal - amort_table[i, 3]
+    amort_table[i, 5] <- outstanding_principal
   }
-  # Format date column correctly
-  class(amort_table$Date) <- "Date"
-  return(amort_table)
+  # Calculates the cumulative sum of interest
+  amort_table[, 6] <- cumsum(amort_table[, 4])
+  # Return data frame
+  to_return <- data.frame(amort_table)
+  class(to_return$Date) <- "Date"
+  return(to_return)
 }
 
 #---------- End of Mortgage Calculator ----------
-# mortgage()
-
 
 
 #---------- HELOC Calculator ----------
-HELOC = function(loan_amount = 100000, principal = 0, rate = .05, income = 1000, expenses = 500, start_date = today(), interest_pay_day = 1, income_pay_day = 1, expenses_pay_day = 1) {
+HELOC = function(loan_amount = 100000, principal = 0, rate = .05, income = 5000, expenses = 2000, start_date = today(), interest_pay_day = 1, income_pay_day = 1, expenses_pay_day = 1) {
   # Outstanding principal of loan 
   outstanding_principal = loan_amount - principal
   # Monthly rate (convert rate to percentage and divide by 12)
@@ -99,11 +100,8 @@ HELOC = function(loan_amount = 100000, principal = 0, rate = .05, income = 1000,
 
 # Test values
 # mortgage(loan_amount = 200000, rate = 4.5, years = 10)
-
 # HELOC(loan_amount = 350000, principal = 0, rate = .06, income = 50000)
 
-
-# print("Using a HELOC to replace your traditional mortgage could save you thousands of dollars in interest and pay off your home in 7-10 years.")
 
 # Thoughts:
 # Keep a running total of interest vs principal. 
