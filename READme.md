@@ -21,7 +21,6 @@ To start the test server, click the "Run App" button from within RStudio. This w
 
 I wrote this software as a solution for a useful HELOC calculator. Many mortgage calculators exist, but no HELOC calculators exist that suit my purposes. 
 
-{Provide a link to your YouTube demonstration.  It should be a 4-5 minute demo of the software running (starting the server and navigating through the web pages) and a walkthrough of the code.}
 
 [Software Demo Video](https://youtu.be/LT2EWPF5fe4)
 
@@ -41,7 +40,6 @@ I used the R programming language with the Shiny, shinyWidgets, and DT libraries
 
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
 * [R Shiny](https://shiny.rstudio.com)
 * [Mastering Shiny](https://mastering-shiny.org/basic-app.html)
 
