@@ -1,2 +1,0 @@
-# HELOC Calculator
- 
