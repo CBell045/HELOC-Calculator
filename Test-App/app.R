@@ -39,20 +39,25 @@ ui <- navbarPage("HELOC vs. Mortgage Calculator",
                                         value = Sys.Date())
                               ),
                             
-                            
+                            # Main Panel
                             mainPanel(h3("Pay-off Schedule"),
                                       tabsetPanel(
-                                        tabPanel("Table View", 
-                                                 fluidRow(
-                                                   column(width = 6, DT::dataTableOutput("mortgage_table")),
-                                                   column(width = 6, DT::dataTableOutput("HELOC_table"))
-                                                 )
-                                              
+                                        # Mortgage
+                                        tabPanel("Mortgage View", 
+                                                DT::dataTableOutput("mortgage_table")
                                                  ),
-                                        tabPanel("Graph View"))
-                                      
+                                        # HELOC
+                                        tabPanel("HELOC View", 
+                                        DT::dataTableOutput("HELOC_table")
+                                        ),
+                                      tabPanel("Graph View")
+                                      )
                           )
                  )),
+                 
+                 
+                 
+                 # About page ---------------------------------
                  tabPanel("About",
                             mainPanel(img(src = "HELOC-vs-mortgage.png", style = "width: 100%"),
                                       h3("What is a HELOC?"),
@@ -66,6 +71,7 @@ Traditionally, Helocs are employed in the second lien position, for purposes of 
                                       
                             )
                           ),
+                 # Prevail page ---------------------------------
                  tabPanel("Prevail",
                             mainPanel(
                               img(src = "Prevail-Logo-White.png", style = "width: 100%"),
@@ -80,16 +86,17 @@ Traditionally, Helocs are employed in the second lien position, for purposes of 
 )
 
 server <- function(input, output) {
-  
+  # Set DT options
   options(DT.options = list(
     lengthMenu = list(c(-1, 5, 10, 15, 30), c('All', '5', '10', '15', '30')),
     pageLength = -1))
   
+  # Mortgage table output
   output$mortgage_table <- DT::renderDataTable({
     mortgage(loan_amount = input$loan_balance, rate = input$interest_rate, start_date = input$start_date) %>%
       datatable() %>% 
-      formatCurrency(columns = 2:5)})
-  
+      formatCurrency(columns = 2:7)})
+  # HELOC table output
   output$HELOC_table <- DT::renderDataTable({
     HELOC(loan_amount = input$loan_balance, rate = input$interest_rate, start_date = input$start_date, income = input$income, expenses = input$expenses) %>%
       datatable() %>%
