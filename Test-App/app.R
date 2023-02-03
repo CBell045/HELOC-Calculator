@@ -44,15 +44,16 @@ ui <- navbarPage("HELOC vs. Mortgage Calculator",
                                       tabsetPanel(
                                         # Mortgage
                                         tabPanel("Mortgage View", 
-                                                DT::dataTableOutput("mortgage_table")
+                                                 DT::dataTableOutput("mortgage_table")
                                                  ),
                                         # HELOC
-                                        tabPanel("HELOC View", 
-                                        DT::dataTableOutput("HELOC_table")
-                                        ),
-                                      tabPanel("Graph View")
+                                        tabPanel("HELOC View",
+                                                 DT::dataTableOutput("HELOC_table")
+                                                 ),
+                                        # Graph
+                                        tabPanel("Graph View")
+                                                  )
                                       )
-                          )
                  )),
                  
                  
